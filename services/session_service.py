@@ -61,7 +61,7 @@ class SessionService:
     @staticmethod
     def get_active_session():
         """Get the currently active session"""
-        return Session.query.filter_by(end_time=None).first()
+        return Session.query.filter(Session.end_time == None).first()
 
     @staticmethod
     def list_sessions():
