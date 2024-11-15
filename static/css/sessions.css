@@ -1,0 +1,138 @@
+/* Container */
+.container {
+    background-color: #fff;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    z-index: 10;
+}
+
+h1 {
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin: 0;
+}
+
+#new-session-button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+#new-session-button:hover {
+    background-color: #219a52;
+}
+
+/* Session List */
+#session-list {
+    padding: 20px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+/* Session Card */
+.session-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-left: 4px solid #ddd;
+    transition: border-color 0.3s, transform 0.2s;
+    cursor: pointer;
+}
+
+.session-card:hover {
+    border-left-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.session-card.active {
+    border-left-color: #27ae60;
+    background-color: #f0f9f4;
+}
+
+.session-card.active:hover {
+    transform: none;
+}
+
+/* Session Card Header */
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.session-name {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Session Info */
+.session-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.session-duration {
+    color: #27ae60;
+    font-weight: 500;
+}
+
+/* Card Buttons */
+.card-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    #session-list {
+        padding: 15px 20px;
+        grid-template-columns: 1fr;
+    }
+
+    .session-card {
+        padding: 15px;
+    }
+
+    .session-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-buttons {
+        flex-direction: column;
+    }
+}

@@ -1,127 +1,481 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Time Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            display: flex;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
             height: 100vh;
+            overflow: hidden;
+            background-color: #f5f5f5;
         }
-        #entries-container {
-            width: 50%;
-            background-color: #f4f4f4;
-            padding: 20px;
-            overflow-y: auto;
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            background-color: #fff;
+            height: 100%;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: minmax(300px, 1fr) 2fr;
+            }
         }
-        #export-button {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-        #export-button:hover {
-            background-color: #219a52;
-        }
-        #command-container {
-            width: 50%;
+
+        .input-section {
             display: flex;
             flex-direction: column;
+            gap: 15px;
             padding: 20px;
-            background-color: #ffffff;
+            background-color: #fff;
+            border-right: 1px solid #eee;
         }
-        #current-task {
-            margin-bottom: 20px;
+
+        .entries-section {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
             padding: 15px;
             background-color: #f8f9fa;
-            border-radius: 4px;
-            display: none;
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
-        #current-task.active {
+
+        .command-section {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
         }
-        #current-task-text {
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #command-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        #command-input:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 500;
-            color: #2c3e50;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
         }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
         #stop-button {
             background-color: #e74c3c;
             color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
         }
+
         #stop-button:hover {
             background-color: #c0392b;
         }
-        #command-input {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            margin-top: auto;
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        #command-input:focus {
-            outline: none;
-            border-color: #3498db;
+
+        .action-buttons button {
+            flex: 1;
+            min-width: 120px;
         }
-        .entry {
-            background-color: white;
-            border-left: 4px solid #4a90e2;
-            padding: 10px;
+
+        #export-button {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #export-button:hover {
+            background-color: #2980b9;
+        }
+
+        #end-session-button {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #end-session-button:hover {
+            background-color: #7f8c8d;
+        }
+
+        .current-task {
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
             margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
         }
+
+        .current-task.active {
+            display: block;
+            border-left: 4px solid #27ae60;
+        }
+
+        #entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .entry {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #ddd;
+            transition: border-color 0.3s, background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .entry:hover {
+            border-left-color: #27ae60;
+        }
+
+        .entry-content {
+            flex: 1;
+        }
+
         .entry-description {
-            font-weight: bold;
+            font-weight: 500;
+            margin-bottom: 5px;
         }
+
         .entry-time {
             color: #666;
-            font-size: 0.8em;
+            font-size: 0.9em;
+        }
+
+        .entry-duration {
+            color: #27ae60;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .entry-notes {
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .notes-button {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #3498db;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .entry:hover .notes-button {
+            opacity: 1;
+        }
+
+        .notes-button:hover {
+            color: #2980b9;
+        }
+
+        .notes-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .notes-icon::before {
+            content: '✎';
+            font-size: 14px;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #e74c3c;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .entry:hover .delete-button {
+            opacity: 1;
+        }
+
+        .delete-button:hover {
+            color: #c0392b;
+        }
+
+        .delete-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .delete-icon::before,
+        .delete-icon::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 2px;
+            background-color: currentColor;
+            top: 50%;
+            left: 0;
+        }
+
+        .delete-icon::before {
+            transform: rotate(45deg);
+        }
+
+        .delete-icon::after {
+            transform: rotate(-45deg);
+        }
+
+        /* Custom scrollbar */
+        .entries-section::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .entries-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .entries-section::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 4px;
+        }
+
+        .entries-section::-webkit-scrollbar-thumb:hover {
+            background: #bbb;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Error state */
+        .error {
+            color: #e74c3c;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #fdf0ed;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .input-section {
+                padding: 15px;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            .entries-section {
+                padding: 15px;
+                flex: 1;
+                height: auto;
+            }
+
+            .input-container {
+                flex-direction: column;
+            }
+
+            #command-input {
+                width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="entries-container">
-        <div class="header">
-            <h2>Today's Activities</h2>
-            <button id="export-button">Export & Clear</button>
+    <div class="container">
+        <div class="input-section">
+            <div class="session-info">
+                <div id="session-name"></div>
+                <div id="session-duration"></div>
+            </div>
+            <div class="command-section">
+                <div class="input-container">
+                    <input type="text" id="command-input" placeholder="What are you working on? (Press Enter to log)" autocomplete="off">
+                    <button id="stop-button">Stop</button>
+                </div>
+                <div class="current-task" id="current-task">
+                    <div id="current-task-text"></div>
+                </div>
+                <div class="action-buttons">
+                    <button id="export-button">Export CSV</button>
+                    <button id="end-session-button">End Session</button>
+                </div>
+            </div>
         </div>
-        <div id="entries-list"></div>
-    </div>
-    <div id="command-container">
-        <div id="current-task">
-            <span id="current-task-text"></span>
-            <button id="stop-button">Stop</button>
+        <div class="entries-section">
+            <div id="entries-list">
+                <!-- Entries will be populated here -->
+            </div>
         </div>
-        <input type="text" id="command-input" placeholder="What are you working on? (type 'stop' or press Enter with empty input to stop)">
     </div>
-
     <script>
+        const sessionId = {{ session_id }};
         const entriesList = document.getElementById('entries-list');
         const commandInput = document.getElementById('command-input');
         const currentTask = document.getElementById('current-task');
         const currentTaskText = document.getElementById('current-task-text');
         const stopButton = document.getElementById('stop-button');
+        const sessionName = document.getElementById('session-name');
+        const sessionDuration = document.getElementById('session-duration');
+
+        function addNotes(entryId, currentNotes) {
+            const notes = prompt('Add notes:', currentNotes || '');
+            if (notes === null) return; // User cancelled
+
+            fetch(`/entries/${entryId}/notes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ notes })
+            })
+            .then(response => response.json())
+            .then(() => {
+                fetchEntries();
+            });
+        }
+
+        function deleteEntry(entryId, event) {
+            event.preventDefault();
+            if (!confirm('Are you sure you want to delete this entry?')) return;
+
+            fetch(`/entries/${entryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(() => {
+                fetchEntries();
+            });
+        }
+
+        function formatDateTime(isoString) {
+            if (!isoString) return '';
+            const date = new Date(isoString);
+            return date.toLocaleString();
+        }
+
+        function formatDuration(startTimeIso, endTimeIso) {
+            const start = new Date(startTimeIso);
+            const end = endTimeIso ? new Date(endTimeIso) : new Date();
+            const diffSeconds = Math.floor((end - start) / 1000);
+            
+            if (diffSeconds < 60) {
+                if (diffSeconds === 0) {
+                    return 'just now';
+                }
+                return `${diffSeconds} ${diffSeconds === 1 ? 'second' : 'seconds'}`;
+            }
+
+            const minutes = Math.floor(diffSeconds / 60);
+            if (minutes < 60) {
+                return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+            }
+
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            
+            if (remainingMinutes === 0) {
+                return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+            }
+            return `${hours} ${hours === 1 ? 'hour' : 'hours'} ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+        }
+
+        function formatSessionDuration(startTimeIso) {
+            const start = new Date(startTimeIso);
+            const now = new Date();
+            const diffSeconds = Math.floor((now - start) / 1000);
+            
+            if (diffSeconds < 60) {
+                if (diffSeconds === 0) {
+                    return 'Duration: just now';
+                }
+                return `Duration: ${diffSeconds} ${diffSeconds === 1 ? 'second' : 'seconds'}`;
+            }
+
+            const minutes = Math.floor(diffSeconds / 60);
+            if (minutes < 60) {
+                return `Duration: ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+            }
+
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+            
+            if (remainingMinutes === 0) {
+                return `Duration: ${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+            }
+            return `Duration: ${hours} ${hours === 1 ? 'hour' : 'hours'} ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+        }
 
         function updateCurrentTask(description) {
             if (description) {
@@ -147,12 +501,23 @@
             });
         }
 
-        function exportAndClear() {
-            if (!confirm('This will export today\'s logs to a CSV file and clear the history. Continue?')) {
-                return;
-            }
-            
-            fetch('/export', {
+        function endSession() {
+            if (!confirm('Are you sure you want to end this session?')) return;
+
+            fetch(`/sessions/${sessionId}/end`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(() => {
+                window.location.href = '/sessions';
+            });
+        }
+
+        function exportSession() {
+            fetch(`/sessions/${sessionId}/export`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +525,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Create blob and download
                 const blob = new Blob([data.content], { type: 'text/csv' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -170,34 +534,56 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
-                
-                // Clear the current task display
-                updateCurrentTask(null);
-                // Refresh the entries list
-                fetchEntries();
             });
+        }
+
+        function updateSessionInfo(session) {
+            sessionName.textContent = session.name;
+            sessionDuration.textContent = formatSessionDuration(session.start_time);
         }
 
         // Fetch and display entries
         function fetchEntries() {
-            fetch('/entries')
-                .then(response => response.json())
-                .then(entries => {
-                    // Update current task
-                    const activeEntry = entries.find(entry => !entry.end_time);
-                    updateCurrentTask(activeEntry ? activeEntry.description : null);
+            Promise.all([
+                fetch(`/sessions/${sessionId}/entries`).then(r => r.json()),
+                fetch(`/sessions/list`).then(r => r.json())
+            ])
+            .then(([entries, sessions]) => {
+                // Update session info
+                const currentSession = sessions.find(s => s.id === sessionId);
+                if (currentSession) {
+                    updateSessionInfo(currentSession);
+                }
 
-                    // Update entries list
-                    entriesList.innerHTML = entries.map(entry => `
-                        <div class="entry">
+                // Update current task
+                const activeEntry = entries.find(entry => !entry.end_time);
+                updateCurrentTask(activeEntry ? activeEntry.description : null);
+
+                // Update entries list
+                entriesList.innerHTML = entries.map(entry => `
+                    <div class="entry">
+                        <div class="entry-content">
                             <div class="entry-description">${entry.description}</div>
                             <div class="entry-time">
-                                ${entry.start_time} 
-                                ${entry.end_time ? `- ${entry.end_time}` : '(ongoing)'}
+                                ${formatDateTime(entry.start_time)} 
+                                ${entry.end_time ? `- ${formatDateTime(entry.end_time)}` : '(ongoing)'}
+                                ${entry.end_time ? `<br><span class="entry-duration">(${formatDuration(entry.start_time, entry.end_time)})</span>` : ''}
                             </div>
+                            ${entry.notes ? `<div class="entry-notes">${entry.notes}</div>` : ''}
                         </div>
-                    `).join('');
-                });
+                        ${entry.end_time ? `
+                            <div class="entry-actions">
+                                <button class="notes-button" onclick="addNotes(${entry.id}, '${entry.notes || ''}')" title="Add notes">
+                                    <span class="notes-icon"></span>
+                                </button>
+                                <button class="delete-button" onclick="deleteEntry(${entry.id}, event)" title="Delete entry">
+                                    <span class="delete-icon"></span>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            });
         }
 
         // Log time on enter
@@ -223,7 +609,25 @@
         stopButton.addEventListener('click', stopCurrentTask);
 
         // Export button click handler
-        document.getElementById('export-button').addEventListener('click', exportAndClear);
+        document.getElementById('export-button').addEventListener('click', exportSession);
+
+        // End session button click handler
+        document.getElementById('end-session-button').addEventListener('click', endSession);
+
+        // Update duration every minute
+        setInterval(() => {
+            const durationElement = document.getElementById('session-duration');
+            if (durationElement.textContent) {
+                fetch(`/sessions/list`)
+                    .then(r => r.json())
+                    .then(sessions => {
+                        const currentSession = sessions.find(s => s.id === sessionId);
+                        if (currentSession) {
+                            updateSessionInfo(currentSession);
+                        }
+                    });
+            }
+        }, 60000);
 
         // Initial fetch
         fetchEntries();
