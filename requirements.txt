@@ -1,8 +1,31 @@
+# Flask and Extensions
 flask==2.3.2
 flask-sqlalchemy==3.0.3
+Werkzeug==2.3.7
+Jinja2>=3.1.2
+itsdangerous>=2.1.2
+click>=8.1.3
+blinker>=1.6.2
+
+# Database
+SQLAlchemy>=1.4.18
+
+# Date/Time Handling
 python-dateutil==2.8.2
+pytz==2024.2
+
+# Environment and Config
 python-dotenv==1.0.1
+
+# Type Hints
+typing-extensions>=4.0.0
+
+# Testing
 pytest==7.4.3
 pytest-cov==4.1.0
 coverage==7.3.2
-typing-extensions>=4.0.0
+
+# Development
+black==24.2.0  # Code formatting
+flake8==7.0.0  # Code linting
+mypy==1.9.0    # Type checking
