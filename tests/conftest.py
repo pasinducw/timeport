@@ -1,19 +1,16 @@
 import os
 import pytest
-from app import app as flask_app
+from app import create_app
 from models import db
 
 @pytest.fixture
 def app():
-    flask_app.config.update({
-        'TESTING': True,
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'
-    })
-    with flask_app.app_context():
-        db.create_all()  # Create tables before tests
-        yield flask_app
+    app = create_app('testing')
+    with app.app_context():
+        db.create_all()
+        yield app
         db.session.remove()
-        db.drop_all()  # Clean up after tests
+        db.drop_all()
 
 @pytest.fixture
 def client(app):
