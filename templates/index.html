@@ -601,10 +601,10 @@
         // End session button click handler
         document.getElementById('end-session-button').addEventListener('click', endSession);
 
-        // Update duration every minute
+        // Update duration every second
         setInterval(() => {
             const durationElement = document.getElementById('session-duration');
-            if (durationElement.textContent) {
+            if (durationElement) {
                 fetch(`/sessions/list`)
                     .then(r => r.json())
                     .then(sessions => {
@@ -614,7 +614,21 @@
                         }
                     });
             }
-        }, 60000);
+
+            // Update active entry duration if any
+            const entries = document.querySelectorAll('.entry');
+            entries.forEach(entry => {
+                const timeDiv = entry.querySelector('.entry-time');
+                if (timeDiv && timeDiv.textContent.includes('(ongoing)')) {
+                    const startTimeMatch = timeDiv.textContent.match(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)/);
+                    if (startTimeMatch) {
+                        const startTime = startTimeMatch[1];
+                        timeDiv.innerHTML = `${formatDateTime(startTime)} (ongoing)<br>
+                            <span class="entry-duration">(${formatDuration(startTime)})</span>`;
+                    }
+                }
+            });
+        }, 1000);
 
         // Initial fetch
         fetchEntries();
