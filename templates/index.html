@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Tracker</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+        #entries-container {
+            width: 50%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #export-button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        #export-button:hover {
+            background-color: #219a52;
+        }
+        #command-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        #current-task {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+        #current-task.active {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #current-task-text {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        #stop-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        #stop-button:hover {
+            background-color: #c0392b;
+        }
+        #command-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-top: auto;
+        }
+        #command-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        .entry {
+            background-color: white;
+            border-left: 4px solid #4a90e2;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .entry-description {
+            font-weight: bold;
+        }
+        .entry-time {
+            color: #666;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div id="entries-container">
+        <div class="header">
+            <h2>Today's Activities</h2>
+            <button id="export-button">Export & Clear</button>
+        </div>
+        <div id="entries-list"></div>
+    </div>
+    <div id="command-container">
+        <div id="current-task">
+            <span id="current-task-text"></span>
+            <button id="stop-button">Stop</button>
+        </div>
+        <input type="text" id="command-input" placeholder="What are you working on? (type 'stop' or press Enter with empty input to stop)">
+    </div>
+
+    <script>
+        const entriesList = document.getElementById('entries-list');
+        const commandInput = document.getElementById('command-input');
+        const currentTask = document.getElementById('current-task');
+        const currentTaskText = document.getElementById('current-task-text');
+        const stopButton = document.getElementById('stop-button');
+
+        function updateCurrentTask(description) {
+            if (description) {
+                currentTaskText.textContent = `Currently working on: ${description}`;
+                currentTask.classList.add('active');
+            } else {
+                currentTaskText.textContent = '';
+                currentTask.classList.remove('active');
+            }
+        }
+
+        function stopCurrentTask() {
+            fetch('/stop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(() => {
+                updateCurrentTask(null);
+                fetchEntries();
+            });
+        }
+
+        function exportAndClear() {
+            if (!confirm('This will export today\'s logs to a CSV file and clear the history. Continue?')) {
+                return;
+            }
+            
+            fetch('/export', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Create blob and download
+                const blob = new Blob([data.content], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = data.filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Clear the current task display
+                updateCurrentTask(null);
+                // Refresh the entries list
+                fetchEntries();
+            });
+        }
+
+        // Fetch and display entries
+        function fetchEntries() {
+            fetch('/entries')
+                .then(response => response.json())
+                .then(entries => {
+                    // Update current task
+                    const activeEntry = entries.find(entry => !entry.end_time);
+                    updateCurrentTask(activeEntry ? activeEntry.description : null);
+
+                    // Update entries list
+                    entriesList.innerHTML = entries.map(entry => `
+                        <div class="entry">
+                            <div class="entry-description">${entry.description}</div>
+                            <div class="entry-time">
+                                ${entry.start_time} 
+                                ${entry.end_time ? `- ${entry.end_time}` : '(ongoing)'}
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        // Log time on enter
+        commandInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const description = commandInput.value.trim();
+                fetch('/log', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ description })
+                })
+                .then(response => response.json())
+                .then(() => {
+                    commandInput.value = '';
+                    fetchEntries();
+                });
+            }
+        });
+
+        // Stop button click handler
+        stopButton.addEventListener('click', stopCurrentTask);
+
+        // Export button click handler
+        document.getElementById('export-button').addEventListener('click', exportAndClear);
+
+        // Initial fetch
+        fetchEntries();
+    </script>
+</body>
+</html>
