@@ -2,7 +2,7 @@ import os
 import logging
 from flask import Flask, jsonify
 from models import db
-from routes import session_bp, entry_bp
+from routes import session_bp, entry_bp, project_bp, client_bp, tag_bp
 from config import config
 from utils.logging_config import setup_logging
 from exceptions import TimeTrackerError, ValidationError
@@ -31,9 +31,16 @@ def create_app(config_name=None):
     # Initialize extensions
     db.init_app(app)
 
+    # Create database tables
+    with app.app_context():
+        db.create_all()
+
     # Register blueprints
     app.register_blueprint(session_bp)
     app.register_blueprint(entry_bp)
+    app.register_blueprint(project_bp, url_prefix='/projects')
+    app.register_blueprint(client_bp, url_prefix='/clients')
+    app.register_blueprint(tag_bp, url_prefix='/tags')
 
     # Register error handlers
     @app.errorhandler(TimeTrackerError)
@@ -78,8 +85,6 @@ def create_app(config_name=None):
 app = create_app()
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(
         host=app.config['HOST'],
         port=app.config['PORT'],

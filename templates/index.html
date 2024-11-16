@@ -348,6 +348,8 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/static/css/modal.css">
+    <link rel="stylesheet" href="/static/css/attributes.css">
 </head>
 <body>
     <div class="container">
@@ -365,8 +367,11 @@
                     <div id="current-task-text"></div>
                 </div>
                 <div class="action-buttons">
-                    <button id="export-button">Export CSV</button>
-                    <button id="end-session-button">End Session</button>
+                    <button id="manage-projects-button" class="btn btn-secondary">Manage Projects</button>
+                    <button id="manage-clients-button" class="btn btn-secondary">Manage Clients</button>
+                    <button id="manage-tags-button" class="btn btn-secondary">Manage Tags</button>
+                    <button id="export-button" class="btn btn-primary">Export CSV</button>
+                    <button id="end-session-button" class="btn btn-danger">End Session</button>
                 </div>
             </div>
         </div>
@@ -376,6 +381,89 @@
             </div>
         </div>
     </div>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Manage Projects</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-project-form">
+                    <div class="form-group">
+                        <label for="project-name">Project Name</label>
+                        <input type="text" id="project-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" name="description"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Project</button>
+                    </div>
+                </form>
+                <div id="projects-list" class="attribute-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div id="client-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Manage Clients</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-client-form">
+                    <div class="form-group">
+                        <label for="client-name">Client Name</label>
+                        <input type="text" id="client-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="client-email">Email</label>
+                        <input type="email" id="client-email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="client-notes">Notes</label>
+                        <textarea id="client-notes" name="notes"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Client</button>
+                    </div>
+                </form>
+                <div id="clients-list" class="attribute-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tag Modal -->
+    <div id="tag-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Manage Tags</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-tag-form">
+                    <div class="form-group">
+                        <label for="tag-name">Tag Name</label>
+                        <input type="text" id="tag-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-color">Color</label>
+                        <input type="color" id="tag-color" name="color" value="#808080">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Tag</button>
+                    </div>
+                </form>
+                <div id="tags-list" class="attribute-list"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const sessionId = {{ session_id }};
         const entriesList = document.getElementById('entries-list');
@@ -556,6 +644,36 @@
                                 ${entry.end_time ? `- ${formatDateTime(entry.end_time)}` : '(ongoing)'}
                                 ${entry.end_time ? `<br><span class="entry-duration">(${formatDuration(entry.start_time, entry.end_time)})</span>` : ''}
                             </div>
+                            <div class="entry-attributes">
+                                ${entry.project ? `
+                                    <div class="entry-attribute entry-project" onclick="attributeManager.showProjectSelector(${entry.id}, event)">
+                                        <i></i>${entry.project.name}
+                                    </div>
+                                ` : `
+                                    <div class="add-attribute" onclick="attributeManager.showProjectSelector(${entry.id}, event)">
+                                        <i></i>Add Project
+                                    </div>
+                                `}
+                                ${entry.client ? `
+                                    <div class="entry-attribute entry-client" onclick="attributeManager.showClientSelector(${entry.id}, event)">
+                                        <i></i>${entry.client.name}
+                                    </div>
+                                ` : `
+                                    <div class="add-attribute" onclick="attributeManager.showClientSelector(${entry.id}, event)">
+                                        <i></i>Add Client
+                                    </div>
+                                `}
+                                ${entry.tags.map(tag => `
+                                    <div class="entry-tag" 
+                                         onclick="attributeManager.toggleEntryTag(${entry.id}, ${tag.id}, false)"
+                                         style="background-color: ${tag.color}">
+                                        ${tag.name}
+                                    </div>
+                                `).join('')}
+                                <div class="add-attribute" onclick="attributeManager.showTagSelector(${entry.id}, event)">
+                                    <i></i>Add Tag
+                                </div>
+                            </div>
                             ${entry.notes ? `<div class="entry-notes">${entry.notes}</div>` : ''}
                         </div>
                         ${entry.end_time ? `
@@ -633,5 +751,7 @@
         // Initial fetch
         fetchEntries();
     </script>
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/attributes.js"></script>
 </body>
 </html>
