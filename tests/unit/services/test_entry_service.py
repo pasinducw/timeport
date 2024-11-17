@@ -35,7 +35,7 @@ def test_create_entry_in_ended_session_fails(db_session):
     db_session.add(session)
     db_session.commit()
 
-    with pytest.raises(ValueError, match="Cannot add entries to ended session"):
+    with pytest.raises(ValueError, match="Cannot create entry in ended session"):
         EntryService.create_entry(session.id, "Test Task")
 
 def test_stop_entry(db_session):
