@@ -1,17 +1,24 @@
-# Minimalist Time Tracker
+# Intelligent Time Tracker
 
-A simple, text-driven time tracking application with a clean, split-screen interface.
+A sophisticated local-first time tracking application that combines natural language input with OS-level intelligence to automate time tracking. It runs locally on your computer while providing a clean web interface, and can integrate with external time tracking services like Clockify.
 
-## Features
+## Key Features
 
-- Minimalist text-based input
-- Split-screen layout
-- Easy task logging and switching
-- Today's activities view
+- Smart text-based input with automatic inference of client, project, and tags
+- OS-level activity tracking and idle detection
+- Local-first architecture with web interface
+- Intelligent automation and context detection
+- Integration with external time tracking services (currently Clockify)
+- Privacy-focused design - all data stays on your computer
 
-## Setup
+## Quick Start
 
 1. Clone the repository
+```bash
+git clone [repository-url]
+cd intelligent-time-tracker
+```
+
 2. Create a virtual environment
 ```bash
 python3 -m venv venv
@@ -23,32 +30,27 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Run the application
+4. Configure the application
+```bash
+cp .env.example .env
+# Edit .env with your settings
+```
+
+5. Run the application
 ```bash
 python app.py
 ```
 
-5. Open `http://localhost:5000` in your browser
+6. Open `http://localhost:5000` in your browser
 
-## Usage
+## Documentation
 
-- Type what you're doing in the input box
-- Press Enter to log a new task
-- Automatically switches and timestamps tasks
-- Left side shows today's logged activities
+- [Product Documentation](docs/PRODUCT.md) - Detailed feature and architecture documentation
+- [Development Roadmap](docs/ROADMAP.md) - Future development plans and timeline
 
-## Tech Stack
+## Contributing
 
-- Backend: Flask
-- Database: SQLAlchemy
-- Frontend: Vanilla JavaScript
-
-## Roadmap
-
-- [ ] Task duration tracking
-- [ ] Reporting and analytics
-- [ ] Export functionality
-- [ ] Keyboard shortcuts
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
 
 ## License
 
