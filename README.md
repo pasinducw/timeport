@@ -56,4 +56,4 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 ## License
 
-MIT License
+Apache License Version 2.0 - See [LICENSE](LICENSE) file for details
