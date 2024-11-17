@@ -1,8 +1,8 @@
-# Intelligent Time Tracker
+# TimePort
 
 A sophisticated local-first time tracking application that combines natural language input with OS-level intelligence to automate time tracking. It runs locally on your computer while providing a clean web interface, and can integrate with external time tracking services like Clockify.
 
-![Time Tracker Interface](docs/screenshots/Time%20Tracker.jpeg)
+![TimePort Interface](docs/screenshots/Time%20Tracker.jpeg)
 
 ## Key Features
 
@@ -18,7 +18,7 @@ A sophisticated local-first time tracking application that combines natural lang
 1. Clone the repository
 ```bash
 git clone [repository-url]
-cd intelligent-time-tracker
+cd TimePort
 ```
 
 2. Create a virtual environment

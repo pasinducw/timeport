@@ -1,6 +1,6 @@
-# Intelligent Time Tracker - Development Roadmap
+# TimePort - Development Roadmap
 
-This document outlines the planned improvements and future development directions for the Intelligent Time Tracker project, focusing on its core capabilities as a local-first, intelligent time tracking solution.
+This document outlines the planned improvements and future development directions for TimePort, focusing on its core capabilities as a local-first, intelligent time tracking solution.
 
 ## 1. Core Intelligence Features
 

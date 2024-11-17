@@ -1,10 +1,10 @@
-# Intelligent Time Tracker
+# TimePort
 
 A sophisticated local time tracking application that combines the simplicity of text-based input with powerful automation and intelligence features.
 
 ## Core Concept
 
-The Intelligent Time Tracker is designed as a local-first application that runs on your computer, leveraging the full capabilities of your operating system while providing a clean web-based interface. It's built to be your intelligent time-tracking companion that understands your work context and automates the tedious parts of time tracking.
+TimePort is designed as a local-first application that runs on your computer, leveraging the full capabilities of your operating system while providing a clean web-based interface. It's built to be your intelligent time-tracking companion that understands your work context and automates the tedious parts of time tracking.
 
 ## Key Features
 
