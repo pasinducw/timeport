@@ -2,6 +2,8 @@
 
 A sophisticated local-first time tracking application that combines natural language input with OS-level intelligence to automate time tracking. It runs locally on your computer while providing a clean web interface, and can integrate with external time tracking services like Clockify.
 
+![Time Tracker Interface](docs/screenshots/Time%20Tracker.jpeg)
+
 ## Key Features
 
 - Smart text-based input with automatic inference of client, project, and tags
