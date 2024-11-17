@@ -1,5 +1,8 @@
 # TimePort
 
+[![Tests and Coverage](https://github.com/pasinducw/timeport/actions/workflows/test.yml/badge.svg)](https://github.com/pasinducw/timeport/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/pasinducw/timeport/branch/main/graph/badge.svg)](https://codecov.io/gh/pasinducw/timeport)
+
 A sophisticated local-first time tracking application that combines natural language input with OS-level intelligence to automate time tracking. It runs locally on your computer while providing a clean web interface, and can integrate with external time tracking services like Clockify.
 
 ![TimePort Interface](docs/screenshots/TimePort-Interface.jpeg)
