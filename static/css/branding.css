@@ -1,0 +1,86 @@
+/* TimePort Branding Styles */
+
+:root {
+    /* Brand Colors */
+    --timeport-primary: #2D3E50;    /* Deep blue for professionalism */
+    --timeport-secondary: #3498DB;  /* Bright blue for interaction */
+    --timeport-accent: #E74C3C;     /* Red for highlights */
+    --timeport-neutral: #ECF0F1;    /* Light gray for backgrounds */
+    --timeport-text: #2C3E50;       /* Dark blue for text */
+    
+    /* Typography */
+    --timeport-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    --timeport-font-mono: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+/* Logo Styles */
+.timeport-logo {
+    font-family: var(--timeport-font-primary);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--timeport-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timeport-logo::before {
+    content: '⏱';
+    font-size: 1.2em;
+    color: var(--timeport-secondary);
+}
+
+/* Brand Button Styles */
+.timeport-button {
+    background-color: var(--timeport-secondary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-family: var(--timeport-font-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.timeport-button:hover {
+    background-color: #2980b9;
+}
+
+/* Brand Input Styles */
+.timeport-input {
+    border: 2px solid var(--timeport-neutral);
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-family: var(--timeport-font-primary);
+    transition: border-color 0.2s ease;
+}
+
+.timeport-input:focus {
+    border-color: var(--timeport-secondary);
+    outline: none;
+}
+
+/* Brand Card Styles */
+.timeport-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem;
+    border: 1px solid var(--timeport-neutral);
+}
+
+/* Brand Typography */
+.timeport-title {
+    font-family: var(--timeport-font-primary);
+    font-weight: 700;
+    color: var(--timeport-primary);
+    margin-bottom: 1rem;
+}
+
+.timeport-text {
+    font-family: var(--timeport-font-primary);
+    color: var(--timeport-text);
+    line-height: 1.5;
+}
