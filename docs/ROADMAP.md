@@ -53,6 +53,20 @@ This document outlines the planned improvements and future development direction
   - [ ] Data archiving
   - [ ] Cleanup routines
 
+### 2.3 Technical Debt
+- [ ] SQLAlchemy modernization
+  - [ ] Update to SQLAlchemy 2.0 query syntax
+  - [ ] Replace deprecated Query.get() with Session.get()
+  - [ ] Update relationship declarations
+- [ ] Test improvements
+  - [ ] Add edge case coverage
+  - [ ] Improve route handler coverage (target: 80%)
+  - [ ] Add integration tests for services
+- [ ] Code quality
+  - [ ] Add type hints throughout codebase
+  - [ ] Implement consistent error handling
+  - [ ] Improve input validation coverage
+
 ## 3. Integration Features
 
 ### 3.1 Clockify Integration
